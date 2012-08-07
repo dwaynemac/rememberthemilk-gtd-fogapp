@@ -22,25 +22,17 @@ createListTabsContainer = () ->
     listTabsBox.innerHTML = ' <div class="white_rbroundbox"> <div class="white_rbtop"> <div> <div></div> </div> </div> <div class="white_rbcontentwrap"> <div class="white_rbcontent"> <div class="taskcloudcontent" id="listtabscontainer"> </div> </div> </div> <div class="white_rbbot"> <div><div></div> </div> </div> </div> ';
     leftColumn.appendChild(listTabsBox)
 
-moveListTabs = () ->
-  listTabs = byId("listtabs")
-  if listTabs
-    listTabs.className = ""
+moveTabs = (id) ->
+  tabs = byId(id)
+  if tabs
+    tabs.className = ""
     listTabsContainer = byId("listtabscontainer")
-    listTabsContainer.appendChild(listTabs) if listTabsContainer 
-
-moveSettingsTabs = () ->
-  settingsTabs = byId('settingstabs')
-  if settingsTabs
-    settingsTabs.className = ""
-    listTabsContainer = byId("listtabscontainer")
-    listTabsContainer.appendChild(settingsTabs) if listTabsContainer
+    listTabsContainer.appendChild(tabs) if listTabsContainer
 
 moveTabsToTheLeft = () ->
   createLeftColumn()
   createListTabsContainer()
-  moveListTabs()
-  moveSettingsTabs()
+  moveTabs(id) for id in ['listtabs', 'settingstabs', 'contacttabs']
 
 runApp = () ->
   moveTabsToTheLeft()

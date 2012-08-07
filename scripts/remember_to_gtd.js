@@ -1,5 +1,5 @@
 (function() {
-  var byId, create, createLeftColumn, createListTabsContainer, debug, debug_mode, moveListTabs, moveSettingsTabs, moveTabsToTheLeft, runApp, waitForIt;
+  var byId, create, createLeftColumn, createListTabsContainer, debug, debug_mode, moveTabs, moveTabsToTheLeft, runApp, waitForIt;
 
   debug_mode = true;
 
@@ -37,31 +37,27 @@
     }
   };
 
-  moveListTabs = function() {
-    var listTabs, listTabsContainer;
-    listTabs = byId("listtabs");
-    if (listTabs) {
-      listTabs.className = "";
+  moveTabs = function(id) {
+    var listTabsContainer, tabs;
+    tabs = byId(id);
+    if (tabs) {
+      tabs.className = "";
       listTabsContainer = byId("listtabscontainer");
-      if (listTabsContainer) return listTabsContainer.appendChild(listTabs);
-    }
-  };
-
-  moveSettingsTabs = function() {
-    var listTabsContainer, settingsTabs;
-    settingsTabs = byId('settingstabs');
-    if (settingsTabs) {
-      settingsTabs.className = "";
-      listTabsContainer = byId("listtabscontainer");
-      if (listTabsContainer) return listTabsContainer.appendChild(settingsTabs);
+      if (listTabsContainer) return listTabsContainer.appendChild(tabs);
     }
   };
 
   moveTabsToTheLeft = function() {
+    var id, _i, _len, _ref, _results;
     createLeftColumn();
     createListTabsContainer();
-    moveListTabs();
-    return moveSettingsTabs();
+    _ref = ['listtabs', 'settingstabs', 'contacttabs'];
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      id = _ref[_i];
+      _results.push(moveTabs(id));
+    }
+    return _results;
   };
 
   runApp = function() {
