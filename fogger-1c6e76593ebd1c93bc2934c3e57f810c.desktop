@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Remember The Milk
+Comment=Remember The Milk
+Categories=Network;WebBrowser;
+Exec=/opt/extras.ubuntu.com/fogger/bin/fogger 1c6e76593ebd1c93bc2934c3e57f810c
+TryExec=/opt/extras.ubuntu.com/fogger/bin/fogger
+Icon=foggerapp
+Terminal=false
+Type=Application
+StartupNotify=true
+Keywords=fogger;fogapp;

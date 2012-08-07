@@ -1,0 +1,26 @@
+#leftColumn {
+  float: left;
+  width: 150px;
+  padding-left: 10px;
+  padding-right: 5px;
+}
+#content {  width: 1155px; }
+#tools_spacer { border-top: 1px solid #CACAAC; }
+#tools { padding-top: 5px; }
+#sorting { margin-top: 0px;}
+#listbox { margin-left: 10px; }
+
+#listtabscontainer ul {
+  padding: 0px 5px 0px 5px;
+  white-space: nowrap;
+  list-style: none;
+}
+
+/* Show only smartLists and Inbox*/
+#listtabs li { display: none; }
+#listtabs li.xtab_smartlist { display: block; }
+#listtabs li.xtab_selected { display: block; } /* avoid selected tab to be hidden */
+#listtabs li:first-child { display: block; }
+
+
+
