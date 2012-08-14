@@ -16,12 +16,22 @@
   list-style: none;
 }
 
-/* Show only smartLists and Inbox*/
 #listtabs li { display: none; }
 #listtabs li:hover { background-color: rgba(236, 236, 236, 0.64);}
 #listtabs li.xtab_smartlist { display: block; }
 #listtabs li.xtab_selected { display: block; } /* avoid selected tab to be hidden */
-#listtabs li:first-child { display: block; }
+#listtabs li:first-child { display: block; } /* show inbox */
+#listtabs li.gtd-list { display: block; }
 
-
-
+#listtabs .next-actions-list {
+    font-size: 1em;
+}
+#listtabs .waiting-list {
+    font-size: 1em;
+}
+#listtabs .today-list {
+    font-size: 1em;
+}
+#listtabs .project-list {
+    font-size: 2em;
+}

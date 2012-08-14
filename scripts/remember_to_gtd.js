@@ -1,5 +1,5 @@
 (function() {
-  var byId, create, createLeftColumn, createListTabsContainer, debug, debug_mode, moveTabs, moveTabsToTheLeft, runApp, waitForIt;
+  var addCssClass, byId, create, createLeftColumn, createListTabsContainer, debug, debug_mode, isNextActionList, isProjectList, isTodayList, isWaitingList, moveTabs, moveTabsToTheLeft, overrideListTabsBlitDiv, setClasses, setupApp, taskCounts;
 
   debug_mode = true;
 
@@ -13,6 +13,26 @@
 
   create = function(tag) {
     return document.createElement(tag);
+  };
+
+  addCssClass = function(tag, klass) {
+    return tag.setAttribute('class', tag.className + ' ' + klass);
+  };
+
+  isNextActionList = function(listName) {
+    return listName.indexOf('@') === 0;
+  };
+
+  isWaitingList = function(listName) {
+    return listName === 'Waiting';
+  };
+
+  isTodayList = function(listName) {
+    return listName === 'Today';
+  };
+
+  isProjectList = function(listName) {
+    return listName.indexOf('pj-') === 0;
   };
 
   createLeftColumn = function() {
@@ -51,7 +71,7 @@
     var id, _i, _len, _ref, _results;
     createLeftColumn();
     createListTabsContainer();
-    _ref = ['listtabs', 'settingstabs', 'contacttabs'];
+    _ref = ['listtabs'];
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       id = _ref[_i];
@@ -60,18 +80,81 @@
     return _results;
   };
 
-  runApp = function() {
-    return moveTabsToTheLeft();
+  setClasses = function() {
+    var li, listName, listTabs, _i, _len, _ref, _results;
+    listTabs = byId('listtabs');
+    _ref = listTabs.getElementsByTagName('li');
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      li = _ref[_i];
+      listName = li.firstChild.innerHTML;
+      if (isNextActionList(listName)) {
+        addCssClass(li, 'gtd-list');
+        addCssClass(li, 'next-actions-list');
+      }
+      if (isWaitingList(listName)) {
+        addCssClass(li, 'gtd-list');
+        addCssClass(li, 'waiting-list');
+      }
+      if (isTodayList(listName)) {
+        addCssClass(li, 'gtd-list');
+        addCssClass(li, 'today-list');
+      }
+      if (isProjectList(listName)) {
+        addCssClass(li, 'gtd-list');
+        _results.push(addCssClass(li, 'project-list'));
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
   };
 
-  waitForIt = function() {
-    if (byId('appview') === null) {
-      return setTimeout(waitForIt, 1000);
-    } else {
-      return runApp();
+  taskCounts = function() {
+    var count, i, list_data, list_lis, query, _len, _ref, _results;
+    if (window.listTabs) {
+      list_lis = window.listTabs.div.getElementsByTagName('li');
+      _ref = window.listTabs.data;
+      _results = [];
+      for (i = 0, _len = _ref.length; i < _len; i++) {
+        list_data = _ref[i];
+        count = 0;
+        if ((query = list_data[2])) {
+          if (query.indexOf("status:") < 0) {
+            query = "(" + query + ") and (status: incomplete)";
+          }
+          count = window.overviewList.getFilteredList(query).length;
+        } else {
+          count = window.format.getListStatistics(list_data[1])[5];
+        }
+        if (count > 0) {
+          _results.push(list_lis[i].innerHTML = list_lis[i].innerHTML + "(" + count + ")");
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     }
   };
 
-  waitForIt();
+  overrideListTabsBlitDiv = function() {
+    var oldBlitDiv;
+    if (window.listTabs) {
+      oldBlitDiv = window.listTabs.blitDiv;
+      return window.listTabs.blitDiv = function() {
+        oldBlitDiv.call(window.listTabs);
+        setClasses();
+        return taskCounts();
+      };
+    }
+  };
+
+  setupApp = function() {
+    moveTabsToTheLeft();
+    setClasses();
+    return taskCounts();
+  };
+
+  window.addEventListener('load', setupApp, false);
 
 }).call(this);
