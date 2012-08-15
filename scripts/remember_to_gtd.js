@@ -1,11 +1,13 @@
 (function() {
-  var addCssClass, byId, create, createLeftColumn, createListTabsContainer, debug, debug_mode, isNextActionList, isProjectList, isTodayList, isWaitingList, moveTabs, moveTabsToTheLeft, overrideListTabsBlitDiv, setClasses, setupApp, taskCounts;
+  var addCssClass, badgeCounterListName, byId, create, createLeftColumn, createListTabsContainer, debug, debug_mode, isNextActionList, isProjectList, isTodayList, isWaitingList, moveTabs, moveTabsToTheLeft, setClasses, setupApp, taskCounts;
 
   debug_mode = true;
 
   debug = function(message) {
     if (debug_mode) return alert(message);
   };
+
+  badgeCounterListName = 'Today';
 
   byId = function(id) {
     return document.getElementById(id);
@@ -111,8 +113,9 @@
   };
 
   taskCounts = function() {
-    var count, i, list_data, list_lis, query, _len, _ref, _results;
-    if (window.listTabs) {
+    var count, fog, i, list_data, list_lis, query, _len, _ref, _results;
+    fog = new fogger.Fogger();
+    if (window.listTabs && window.overviewList && window.format) {
       list_lis = window.listTabs.div.getElementsByTagName('li');
       _ref = window.listTabs.data;
       _results = [];
@@ -128,7 +131,11 @@
           count = window.format.getListStatistics(list_data[1])[5];
         }
         if (count > 0) {
-          _results.push(list_lis[i].innerHTML = list_lis[i].innerHTML + "(" + count + ")");
+          list_lis[i].innerHTML = list_lis[i].innerHTML + "(" + count + ")";
+        }
+        if (window.listTabs.entries[i] === badgeCounterListName) {
+          fog.setCount(count);
+          _results.push(fog.setCountVisible(true));
         } else {
           _results.push(void 0);
         }
@@ -137,22 +144,10 @@
     }
   };
 
-  overrideListTabsBlitDiv = function() {
-    var oldBlitDiv;
-    if (window.listTabs) {
-      oldBlitDiv = window.listTabs.blitDiv;
-      return window.listTabs.blitDiv = function() {
-        oldBlitDiv.call(window.listTabs);
-        setClasses();
-        return taskCounts();
-      };
-    }
-  };
-
   setupApp = function() {
     moveTabsToTheLeft();
     setClasses();
-    return taskCounts();
+    return setTimeout(taskCounts, 1000);
   };
 
   window.addEventListener('load', setupApp, false);

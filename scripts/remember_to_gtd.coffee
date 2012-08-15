@@ -1,6 +1,8 @@
 debug_mode = true
 debug = (message) -> alert message if debug_mode
 
+badgeCounterListName = 'Today' # name of the list wich taskCount will be used for badge
+
 # Helper fuctions
 byId = (id) -> document.getElementById(id)
 create = (tag) -> document.createElement(tag)
@@ -66,7 +68,8 @@ setClasses = () ->
 #   - overviewList
 #   - format
 taskCounts = () ->
-  if window.listTabs
+  fog = new fogger.Fogger()
+  if window.listTabs and window.overviewList and window.format
     list_lis = window.listTabs.div.getElementsByTagName('li')
     for list_data, i in window.listTabs.data
       count = 0
@@ -78,23 +81,26 @@ taskCounts = () ->
       else
         # a normal list, without query
         count = window.format.getListStatistics(list_data[1])[5]
+
       if count > 0
         list_lis[i].innerHTML = list_lis[i].innerHTML + "(" + count + ")"
 
-overrideListTabsBlitDiv = () ->
-  if window.listTabs
-    oldBlitDiv = window.listTabs.blitDiv
-    window.listTabs.blitDiv = () ->
-      oldBlitDiv.call(window.listTabs)
-      setClasses()
-      taskCounts()
+      if window.listTabs.entries[i] == badgeCounterListName
+        fog.setCount(count)
+        fog.setCountVisible(true)
 
-setupDesktopNotification = () ->
-  # TODO use window.overviewList.getFilteredList to poll for tasks due NOW and notify.
+#overrideListTabsBlitDiv = () ->
+#  if window.listTabs
+#    oldBlitDiv = window.listTabs.blitDiv
+#    window.listTabs.blitDiv = () ->
+#      oldBlitDiv.call(window.listTabs)
+#      setClasses()
+#      taskCounts()
 
 setupApp = () ->
   moveTabsToTheLeft()
   setClasses()
-  taskCounts()
+  setTimeout(taskCounts,1000) # wait for window.format
 
 window.addEventListener('load',setupApp,false)
+#window.addEventListener('load',overrideListTabsBlitDiv,false)
